@@ -1,0 +1,84 @@
+Medical Records Using Ethereum Blockchain
+
+Problem statement:
+
+In healthcare, a patient has their health record fragmented across multiple locations e.g. labs, hospital etc. 
+In a decentralized world, make sure that these records can be stored on public blockchain
+and can help patients to access them anywhere they want.
+& secure access to these records.
+
+Proposed solution:
+
+Patients establish their identity on the Ethereum Blockchain through a Smart contract (Patient_Identity.sol).
+Using this contract, medical data can be added to the contract as records by the identity owner (Patient) and are stored as hashes.
+
+So, essentially we are not storing raw data on the blockchain. Rather, we are hashing the data and storing them as records in the contract,
+wherein we will be restricting record updation/deletion/retrieval only to the contract owner.
+
+Medical records/data can be endorsed by any entity like labs, hospitals, independent practioner/doctor, etc. 
+This is done by storing a corresponding endorsement hash against the Medical record hash. 
+
+To verify underlying Records and endorsement data, corresponding hashes must be computed, and their presence verified within the corresponding identity contract.
+
+The approach utilizes a data-endorsement model enabled by the use of smart contracts. 
+An Owner-Patient can attest that a 'record' is a correct representation of a part of their identity (by storing a corresponding hash value within their identity).
+
+
+Patient_Identity.sol
+
+This is the Patient_Identity contract as used by the Patient instance. 
+It describes the core functionality required as part of establishing the identity of a Patient along with encryption keys, records & endorsements.
+
+A Patient ID is an Ethereum Smart Contract address.  
+It provides access to identity management commands and stores hash representations of Medical Records.
+
+Contract has a constructor that defines the owner and core elements of the identity:
+
+address - a 32 byte hash of the address at which the contract is deployed.
+key - an encryption (public) key that allows other entities to send data for encrypted receipt and decryption by this identity.
+Sign key - a public key that allows other entities to verify Endorsements signed by this identity.
+Record mapping - A mapping that stores the Medical Records (and associated Endorsements) related to the contract/identity.
+
+
+Patient_IDentityRegistry.sol
+
+This contract holds a list of valid contracts (Patient Identities) that are approved as valid implementations of Paitient Identity. 
+ 
+This should be maintained as a list on the Blockchain so that other contracts can perform real-time verification that a contract (patient identity) is a valid identity.
+
+
+Records
+
+A Record is a specific instance of a record template which has been populated and (the corresponding hash) stored within a Patient ID.
+
+The record hash corresponds to a record stored off-chain, which consists of at least:
+RecordHash
+RecordId (record template identifier)
+Record field set
+
+Record creation/update/removal/retrieval transactions can only be submitted by the identity owner.
+
+
+Endorsements
+
+An endorsement is a record of attestation by a third party in relation to a specified Record, 
+stored within the identity contract. 
+
+The endorsement hash corresponds to an endorsement record stored off-chain, which consists of at least:
+Endorsement Hash
+Endorsee Address (Patient ID)
+Endorsed record Hash
+Endorser Address (Practitioner_ID)
+Endorser signature of endorsement
+
+Value of the identity / record / endorsement model
+
+Given that a Record has been endorsed by a trusted Lab/Hospital/Practitioner , the weight of that endorsement is what adds value to the data. 
+A record without endorsement requires complete trust in the identity. 
+
+
+Record Templates
+
+A Record Template can describe either a single field, or collection of fields representing a logical set of identity data (Medical Records).
+
+
