@@ -1,0 +1,80 @@
+PKI approach
+
+The idea here is to enhance the Patient Identity smart contract to include the following:
+
+1) Introduction of a boolean PROOF_EXISTS and owner in the Record Struct. E.g.:
+
+	struct Record {
+		address owner;
+        bytes32 hash;
+        mapping(bytes32 => Endorsement) endorsements;
+		bool PROOF_EXISTS ;		
+    }
+	
+2) Declare Signing Key as a Struct:
+
+	struct SigningKey {
+		address signer ;
+		uint recordID ;
+		uint expiryDate ;
+	}
+
+3) Declare a Revoke struct:
+
+	struct Revoke {
+		uint signingID ;
+	}
+
+4) Considering the above structs, we can have functions like signRecord() and revokeSign() which perform the following functionality:
+
+	signRecord() : 
+	Input - recordID and expiryDate
+	Output - signingID
+
+Pseudo code:
+If we declare a signatures array, 
+	a) SigningKey sig = signatures[signingID];
+	b) sig.signer = msg.sender;
+	c) sig.recordID = recordID;
+	d) sig.expiryDate = expiryDate;
+
+5) Similarly, we can have revokeSign function that takes signingID as input parameter and returns a RevokeID:
+
+Pseudo code:
+	a) Check if record owner is the message sender:
+		if ( records[signingID].owner == msg.sender )
+	b) Considering a revocations array,
+		Revoke[] public revocations;
+	c) Revoke revocation = revocations[revokeID];
+	d) revocation.signingID = signingID; 
+	
+OR
+	
+Introduce a key Revoke contract consisting of:
+	a) mapping (address => bool) keyRevoked;
+
+	b) function like keyRevoke() which checks if keyRevoked[msg.sender] = true;
+	
+	c) function addExpiryForKey(uint timeInSeconds) which allows setting an expiry if it hasn't been set already
+
+	d) function to check if key is valid: checkKeyValid(address keyAddress) returns(bool) 
+	
+6) On-chain access control
+
+if (msg.sender == hasAccess) {
+  // Do something
+} else {
+  // Restrict access
+}
+
+7) With a Revocation Key List construct we can also check if the key is valid before allowing access to the user:
+
+RevocationList rl = RevocationList.at(validAddress);
+var checkKeyValid = rl.checkKeyValid(msg.sender);
+if (msg.sender == hasAccess && checkKeyValid) {
+  // Do something
+} else if (!checkKeyValid){
+  // Key is revoked/expired!
+} else {
+  // Restrict acccess
+}
