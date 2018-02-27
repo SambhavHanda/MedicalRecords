@@ -1,3 +1,3 @@
 # MedicalRecords
 
-BlockChain implementation for storing and retrieving medical records.
+Blockchain implementation (Ethereum Smart Contracts) for storing and retrieving medical records(EHRs).
