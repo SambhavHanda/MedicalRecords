@@ -2,10 +2,8 @@ Medical Records Using Ethereum Blockchain
 
 Problem statement:
 
-In healthcare, a patient has their health record fragmented across multiple locations e.g. labs, hospital etc. 
-In a decentralized world, make sure that these records can be stored on public blockchain
-and can help patients to access them anywhere they want.
-& secure access to these records.
+In Healthcare domian, a patients have their health records fragmented across multiple locations e.g. labs, hospital etc. 
+In a decentralized world, we need to make sure that these records can be stored on public blockchain and can help patients access them from anywhere they want. Design sample smart contracts for the same and propose the corresponding approach.
 
 Proposed solution:
 
